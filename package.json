@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@shoutem/ui": "^0.23.4",
+    "moment": "^2.22.2",
     "react": "16.3.1",
     "react-native": "^0.55.4",
     "react-native-actionsheet": "^2.4.2",

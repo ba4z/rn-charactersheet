@@ -31,6 +31,7 @@ class Character {
 	_eyeColor; //string
 	_skinColor; //string
 	_hairColor; //string
+	_connectedParty; //guid
 
 	//Every 4 levels proficiency bonus increases by 1
 	static baseProficiency = 2;
@@ -213,6 +214,14 @@ class Character {
 
 	set hairColor(value) {
 		this._hairColor = value;
+	}
+
+	get connectedParty() {
+		return this._connectedParty;
+	}
+
+	set connectedParty(value) {
+		this._connectedParty = value;
 	}
 }
 

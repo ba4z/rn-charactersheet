@@ -274,7 +274,7 @@ class CharacterView extends React.Component {
 							case "items":
 								return <ItemsView items={this.state.items} viewItem={this.viewItem.bind(this)} characterId={this.state.character.characterId} addItem={this.addItem.bind(this)}/>;
 							case "party":
-								return <PartyView/>;
+								return <PartyView character={this.state.character}/>;
 							default:
 								return null;
 						}

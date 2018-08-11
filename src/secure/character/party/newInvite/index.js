@@ -4,12 +4,12 @@ import {TouchableOpacity, View, ScrollView} from "react-native";
 import {Button, Icon, Text} from "react-native-elements";
 import {TextInput} from "@shoutem/ui/components/TextInput";
 
-class NewParty extends React.Component {
+class NewInvite extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			name: ""
+			email: ""
 		};
 	}
 
@@ -23,23 +23,27 @@ class NewParty extends React.Component {
 					<Icon name='md-close' type='ionicon' size={25}/>
 				</TouchableOpacity>
 				<View style={{flex: 1, backgroundColor: "white", justifyContent: "center", alignItems: "center"}}>
-					<Text h3>Create new party!</Text>
+					<Text h3>Invite another player to your party</Text>
 					<TextInput
 						style={styles.input}
-						placeholder={"Party Name"}
-						onChangeText={(text) => this.setState({name: text})}
+						autoFocus={true}
+						autoCorrect={false}
+						autoCapitalize="none"
+						keyboardType={"email-address"}
+						placeholder={"Player's email address"}
+						onChangeText={(text) => this.setState({email: text})}
 					/>
 					<Button
 						buttonStyle={styles.button}
 						backgroundColor={styles.button.backgroundColor}
 						raised
-						onPress={() => this.props.createParty(this.state.name)}
+						onPress={() => this.props.inviteUser(this.state.email)}
 						icon={{name: "md-add", type: "ionicon"}}
-						title='Start new Party'/>
+						title='Invite User'/>
 				</View>
 			</ScrollView>
 		);
 	}
 }
 
-export default NewParty;
+export default NewInvite;

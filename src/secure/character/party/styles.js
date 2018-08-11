@@ -9,8 +9,12 @@ export default {
 		flex: 1,
 		alignItems: "center",
 		justifyContent: "center",
-		paddingTop: 50,
+		paddingTop: 25,
 		flexDirection: "column",
+	},
+	header: {
+		fontSize: 25,
+		margin: 10
 	},
 	button: {
 		backgroundColor: "#2794F0",

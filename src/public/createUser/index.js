@@ -20,6 +20,7 @@ class CreateUser extends React.Component {
 	createUser() {
 		this.setState({busy: true});
 		firebase.auth().createUserWithEmailAndPassword(this.state.username, this.state.password).then(user => {
+			user.updateProfile({displayName: this.state.name});
 			this.setState({busy: false});
 			this.props.navigation.navigate("CharacterList", {newCharacter: true});
 		}).catch(error => {

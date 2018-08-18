@@ -15,6 +15,7 @@ import uploadImage from "../../shared/imageUpload";
 import Stats from "../../om/Stats";
 import Character from "../../om/Character";
 import PartyView from "./party";
+import SpellsView from "./spells";
 
 // For Setting up party rules:
 // https://firebase.googleblog.com/2016/10/group-security-in-firebase-database.html
@@ -58,8 +59,9 @@ class CharacterView extends React.Component {
 	}
 
 	componentDidMount() {
-		Promise.all([this.loadFeatures(), this.loadItems(), this.loadStats()]).then(data => {
-			this.setState({features: data[0].val(), items: data[1].val(), stats: data[2].val(), busy: false});
+		Promise.all([this.loadFeatures(), this.loadItems(), this.loadStats(), this.loadSpells()]).then(data => {
+			console.log(data);
+			this.setState({features: data[0].val(), items: data[1].val(), stats: data[2].val(), spells: data[3].val(), busy: false});
 		}, err => {
 			Alert.alert("Error retrieving data", err.message);
 		});
@@ -93,6 +95,10 @@ class CharacterView extends React.Component {
 
 	loadStats() {
 		return firebase.database().ref(`stats/${firebase.auth().currentUser.uid}/${this.state.character.characterId}`).once();
+	}
+
+	loadSpells() {
+		return firebase.database().ref(`spells/${firebase.auth().currentUser.uid}/${this.state.character.characterId}`).once();
 	}
 
 	addItem(newItem) {
@@ -132,11 +138,33 @@ class CharacterView extends React.Component {
 	}
 
 	viewItem(item) {
-		this.props.navigation.navigate("ViewItem", {item: item, removeItem: this.removeItem.bind(this)});
+		this.props.navigation.navigate("ViewItem", {spell: item, removeItem: this.removeItem.bind(this)});
 	}
 
 	viewFeature(feature) {
 		this.props.navigation.navigate("ViewFeature", {feature: feature, removeFeature: this.removeFeature.bind(this)});
+	}
+
+	addSpell(newSpell) {
+		let currentFeatures = this.state.spells || {};
+		currentFeatures[newSpell.spellId] = newSpell;
+		this.setState({spells: currentFeatures});
+	}
+
+	viewSpell(spell) {
+		this.props.navigation.navigate("ViewSpell", {spell: spell, removeSpell: this.removeSpell.bind(this)});
+	}
+
+	removeSpell(removeSpell) {
+		let currentSpells = this.state.spells;
+		if(currentSpells && currentSpells[removeSpell.spellId]) {
+			removeSpell.remove().then(() => {
+				delete currentSpells[removeSpell.spellId];
+				this.setState({spells: currentSpells});
+			}, err => {
+				Alert.alert("Error removing spell", err.message);
+			});
+		}
 	}
 
 	selectImage(index) {
@@ -275,6 +303,8 @@ class CharacterView extends React.Component {
 								return <ItemsView items={this.state.items} viewItem={this.viewItem.bind(this)} characterId={this.state.character.characterId} addItem={this.addItem.bind(this)}/>;
 							case "party":
 								return <PartyView character={this.state.character}/>;
+							case "spells":
+								return <SpellsView spells={this.state.spells} character={this.state.character} addSpell={this.addSpell.bind(this)} viewSpell={this.viewSpell.bind(this)} />;
 							default:
 								return null;
 						}

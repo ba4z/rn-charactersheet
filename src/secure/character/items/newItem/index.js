@@ -159,7 +159,7 @@ class NewItem extends React.Component {
 		this.newItem.amount = this.state.amount;
 		this.newItem.url = this.state.url;
 		this.newItem.save();
-		this.props.addItem(this.newItem);
+		this.props.addSpell(this.newItem);
 	}
 
 	nextSlide() {

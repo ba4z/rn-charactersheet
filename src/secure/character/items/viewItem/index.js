@@ -9,12 +9,12 @@ class ViewItem extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {item: props.navigation.state.params.item};
+		this.state = {spell: props.navigation.state.params.spell};
 	}
 
 	generateDiceLabel = () => {
 		let label = "";
-		let item = this.state.item;
+		let item = this.state.spell;
 		if(item.diceAmount && item.diceType) {
 			label = item.diceAmount + item.diceType;
 			if(item.extraType) {
@@ -32,7 +32,7 @@ class ViewItem extends React.Component {
 				{text: 'Cancel', onPress: () => {}},
 				{text: 'Yes', onPress: () => {
 						this.props.navigation.goBack();
-						this.props.navigation.state.params.removeItem(this.state.item);
+						this.props.navigation.state.params.removeItem(this.state.spell);
 				}},
 			]
 		)
@@ -40,8 +40,8 @@ class ViewItem extends React.Component {
 
 	render() {
 		return (
-			<Card title={this.state.item.name} >
-				{ this.state.item.type === Item.itemTypes.weapon.key &&
+			<Card title={this.state.spell.name} >
+				{ this.state.spell.type === Item.itemTypes.weapon.key &&
 					<ListItem
 						key={0}
 						title={this.generateDiceLabel()}
@@ -50,34 +50,34 @@ class ViewItem extends React.Component {
 					/>
 				}
 
-				{ this.state.item.type === Item.itemTypes.weapon.key && this.state.item.extraAmount &&
+				{ this.state.spell.type === Item.itemTypes.weapon.key && this.state.spell.extraAmount &&
 					<ListItem
 						key={1}
-						title={`+${this.state.item.extraAmount}`}
+						title={`+${this.state.spell.extraAmount}`}
 						leftIcon={{name: "sword", type: "material-community"}}
 						hideChevron={true}
 					/>
 				}
 
-				{this.state.item.type === Item.itemTypes.armor.key &&
+				{this.state.spell.type === Item.itemTypes.armor.key &&
 					<ListItem
 						key={2}
-						title={`+${this.state.item.extraAmount}`}
+						title={`+${this.state.spell.extraAmount}`}
 						leftIcon={{name: "shield", type: "font-awesome"}}
 						hideChevron={true}
 					/>
 				}
 				<ListItem
-					containerStyle={{borderBottomWidth: 0}}
+					containerStyle={{borderBottomWidth: 0.5}}
 					key={3}
-					title={`Amount: ${this.state.item.amount}`}
+					title={`Amount: ${this.state.spell.amount}`}
 					leftIcon={{name: "info", type: "feather"}}
 					hideChevron={true}
 				/>
 				<ListItem
 					containerStyle={{borderBottomWidth: 0}}
 					key={4}
-					title={this.state.item.description}
+					title={this.state.spell.description}
 					leftIcon={{name: "info", type: "feather"}}
 					hideChevron={true}
 				/>

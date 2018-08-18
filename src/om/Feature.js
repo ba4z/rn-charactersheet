@@ -95,10 +95,8 @@ class Feature {
 	};
 
 	static featureTypes = {
-		"feature": {name: "Features", icon: "star", iconType: "evilicon", key: "feature"},
-		"language": {name: "Languages & Other Proficiencies", icon: "ios-globe-outline", iconType: "ionicon", key: "language"},
-		"spell": {name: "Spells", icon: "ios-color-wand", iconType: "ionicon", key: "spell"},
-		"cantrip": {name: "Cantrips", icon: "magic", iconType: "font-awesome", key: "cantrip"},
+		"feature": {name: "Feature", icon: "star", iconType: "evilicon", key: "feature"},
+		"language": {name: "Language & Other Proficiency", icon: "ios-globe-outline", iconType: "ionicon", key: "language"}
 	};
 
 	constructor(characterId) {

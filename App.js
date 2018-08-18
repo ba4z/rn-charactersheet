@@ -8,6 +8,7 @@ import ViewItem from "./src/secure/character/items/viewItem";
 import ViewFeature from "./src/secure/character/features/viewFeature";
 import CreateUser from "./src/public/createUser";
 import InfoView from "./src/secure/character/info";
+import ViewSpell from "./src/secure/character/spells/viewSpell";
 
 const RootStack = createStackNavigator({
 	Login: {
@@ -33,6 +34,9 @@ const RootStack = createStackNavigator({
 	},
 	CharacterInfo: {
 		screen: InfoView
+	},
+	ViewSpell: {
+		screen: ViewSpell
 	}
 });
 

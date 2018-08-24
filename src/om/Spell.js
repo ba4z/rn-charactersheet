@@ -19,6 +19,8 @@ class Spell {
 		"cantrip": {name: "Cantrip", icon: "magic", iconType: "font-awesome", key: "cantrip"},
 	};
 
+	static maxSpellLevel = 9;
+
 	constructor(characterId) {
 		this._created = new Date().getTime();
 		this.characterId = characterId;

@@ -1,8 +1,10 @@
 import React from "react";
+import styles from "./styles";
 import {Icon, List, ListItem} from "react-native-elements";
 import {Alert, Modal, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import NewSpell from "./newSpell";
 import Spell from "../../../om/Spell";
+import UpDownInput from "../../../shared/upDownInput";
 
 class SpellsView extends React.Component {
 	static navigationOptions = ({navigation}) => ({
@@ -15,7 +17,8 @@ class SpellsView extends React.Component {
 		this.state = {
 			fbItems: props.spells,
 			spells: this.processSpells(props.spells),
-			addItemModal: false
+			addItemModal: false,
+			spellSlots: {}
 		};
 	}
 
@@ -36,8 +39,8 @@ class SpellsView extends React.Component {
 		return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
 	}
 
-
 	componentWillReceiveProps(nextProps) {
+		this.props = nextProps;
 		this.setState({
 			fbItems: nextProps.spells,
 			spells: this.processSpells(nextProps.spells)
@@ -53,6 +56,24 @@ class SpellsView extends React.Component {
 		this.showAddSpellModal(false);
 	}
 
+	generateSpellSlots(level) {
+		let spellSlots = [];
+		if(level > Spell.maxSpellLevel) {
+			level = Spell.maxSpellLevel;
+		}
+		for (let i = 0; i < level; i++) {
+			spellSlots.push(<View key={i}>
+				<Text style={{display: "flex", textAlign: "center"}}>Level {i + 1}</Text>
+				<UpDownInput value={this.state.spellSlots[i]} color="#c10303" min={"0"} onChange={(newVal) => {
+					let currentSpellSlots = this.state.spellSlots;
+					currentSpellSlots[i] = newVal;
+					this.setState({spellSlots: currentSpellSlots})}
+				}/>
+			</View>);
+		}
+		return spellSlots;
+	}
+
 	render() {
 		return (
 			<ScrollView>
@@ -64,9 +85,10 @@ class SpellsView extends React.Component {
 				</Modal>
 
 				<View>
-					<Text>
-						Spell left and stuff to be added
-					</Text>
+					<Text style={styles.header}>Spell slots left per Level</Text>
+					<View style={{flex: 1, justifyContent: "center", flexDirection: "row", marginTop: 25}}>
+						{this.generateSpellSlots(this.props.character.level)}
+					</View>
 				</View>
 
 				<List containerStyle={{marginBottom: 20}}>

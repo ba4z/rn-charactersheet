@@ -41,6 +41,23 @@ class PartyView extends React.Component {
 		}, 500);
 	}
 
+	componentWillReceiveProps(nextProps) {
+		this.setState({character: nextProps.character});
+		if(this.state.connectedToParty && this.state.partyId) {
+			let newPartyProfile = {
+				name: this.props.character.name,
+				level: this.props.character.level,
+				class: this.props.character.characterClass.name,
+				race: this.props.character.race.name,
+				role: this.state.partyOwner ? 'owner' : 'member'
+			};
+			firebase.database().ref(`parties/${this.state.partyId}/members/${firebase.auth().currentUser.uid}`).set(newPartyProfile).then(() => {
+			}, err => {
+				Alert.alert("Could not update party profile", err.message);
+			});
+		}
+	}
+
 	findYourParty(partyId) {
 		this.partyListener = firebase.database().ref(`parties/${partyId}`);
 		this.partyListener.on("value", result => {
@@ -103,7 +120,7 @@ class PartyView extends React.Component {
 		this.setState({createPartyModal: false});
 
 		let members = {};
-		members[firebase.auth().currentUser.uid] = {role: "owner", name: firebase.auth().currentUser.displayName};
+		members[firebase.auth().currentUser.uid] = {role: "owner", name: this.props.character.name, level: this.props.character.level, class: this.props.character.characterClass.name, race: this.props.character.race.name};
 
 		console.log(members);
 		firebase.database().ref(`parties/${newPartyId}/name`).set(partyName).then(() => {
@@ -209,7 +226,7 @@ class PartyView extends React.Component {
 
 	joinParty(selectedParty) {
 		//Add self as member, remove invitation
-		let newMember = {inviteId: selectedParty.inviteId, role: "member", name: this.props.character.name};
+		let newMember = {inviteId: selectedParty.inviteId, role: "member", name: this.props.character.name, level: this.props.character.level, class: this.props.character.characterClass.name, race: this.props.character.race.name};
 		firebase.database().ref(`parties/${selectedParty.partyId}/members/${firebase.auth().currentUser.uid}`).set(newMember).then(() => {
 			this.props.character.connectedParty = selectedParty.partyId;
 			this.props.character.save();
@@ -293,6 +310,7 @@ class PartyView extends React.Component {
 											title={`Party: ${l.name}`}
 											onPress={() => this.joinPartyConfirm(l)}
 											subtitle={Moment(l.invited).format("dddd MMMM Do, h:mm a")}
+											subtitleNumberOfLines={2}
 										/>
 									))
 								}
@@ -328,6 +346,9 @@ class PartyView extends React.Component {
 												// rightIcon={{name: "dots-three-vertical", type: "entypo"}}
 												title={this.state.members[l].name}
 												subtitle={this.state.members[l].role}
+												rightTitle={`Level ${this.state.members[l].level}\n${this.state.members[l].class} ${this.state.members[l].race}`}
+												rightTitleNumberOfLines={2}
+												rightTitleStyle={{flex: 1, textAlign: "right", padding: 5, color: "gray"}}
 											/>
 										))
 									}

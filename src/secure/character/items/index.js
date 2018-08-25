@@ -37,6 +37,7 @@ class ItemsView extends React.Component {
 
 
 	componentWillReceiveProps(nextProps) {
+		this.props = nextProps;
 		this.setState({
 			fbItems: nextProps.items,
 			items: this.processItems(nextProps.items)

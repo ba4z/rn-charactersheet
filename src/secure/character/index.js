@@ -119,6 +119,10 @@ class CharacterView extends React.Component {
 		}
 	}
 
+	shareItem(item) {
+		console.log(item);
+	}
+
 	addFeature(newFeature) {
 		let currentFeatures = this.state.features || {};
 		currentFeatures[newFeature.featureId] = newFeature;
@@ -138,7 +142,7 @@ class CharacterView extends React.Component {
 	}
 
 	viewItem(item) {
-		this.props.navigation.navigate("ViewItem", {spell: item, removeItem: this.removeItem.bind(this)});
+		this.props.navigation.navigate("ViewItem", {spell: item, removeItem: this.removeItem.bind(this), partyId: this.state.character.connectedParty});
 	}
 
 	viewFeature(feature) {

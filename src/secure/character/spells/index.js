@@ -36,7 +36,20 @@ class SpellsView extends React.Component {
 	}
 
 	sortObject(o) {
-		return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
+		let spellList = Object.values(o);
+		return spellList.sort(this.dynamicSort("level"));
+	}
+
+	dynamicSort(property) {
+		let sortOrder = 1;
+		if(property[0] === "-") {
+			sortOrder = -1;
+			property = property.substr(1);
+		}
+		return function (a, b) {
+			let result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+			return result * sortOrder;
+		}
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -57,19 +70,27 @@ class SpellsView extends React.Component {
 	}
 
 	generateSpellSlots(level) {
+		let availableLevels = {};
+		Object.keys(this.state.spells).map((spellId) => {
+			availableLevels[this.state.spells[spellId].level] = true;
+		});
+
 		let spellSlots = [];
 		if(level > Spell.maxSpellLevel) {
 			level = Spell.maxSpellLevel;
 		}
 		for (let i = 0; i < level; i++) {
-			spellSlots.push(<View key={i}>
-				<Text style={{display: "flex", textAlign: "center"}}>Level {i + 1}</Text>
-				<UpDownInput value={this.state.spellSlots[i]} color="#c10303" min={"0"} onChange={(newVal) => {
-					let currentSpellSlots = this.state.spellSlots;
-					currentSpellSlots[i] = newVal;
-					this.setState({spellSlots: currentSpellSlots})}
-				}/>
-			</View>);
+			if(availableLevels[i]) {
+				spellSlots.push(<View key={i}>
+					<Text style={{display: "flex", textAlign: "center"}}>Level {i}</Text>
+					<UpDownInput value={this.state.spellSlots[i]} color="#c10303" min={"0"}
+					             value={this.props.character.availableSpellsLeft[i]} onChange={(newVal) => {
+						this.props.character.availableSpellsLeft[i] = newVal;
+						this.props.character.save();
+					}
+					}/>
+				</View>);
+			}
 		}
 		return spellSlots;
 	}
@@ -81,36 +102,43 @@ class SpellsView extends React.Component {
 				<Modal presentationStyle="formSheet"
 				       animationType="slide"
 				       visible={this.state.addItemModal}>
-					<NewSpell addSpell={this.addSpell.bind(this)} show={this.showAddSpellModal.bind(this)} characterId={this.props.character.characterId}/>
+					<NewSpell addSpell={this.addSpell.bind(this)} show={this.showAddSpellModal.bind(this)}
+					          characterId={this.props.character.characterId}/>
 				</Modal>
 
+				{this.state.spells && this.state.spells.length > 0 &&
 				<View>
 					<Text style={styles.header}>Spell slots left per Level</Text>
 					<View style={{flex: 1, justifyContent: "center", flexDirection: "row", marginTop: 25}}>
 						{this.generateSpellSlots(this.props.character.level)}
 					</View>
 				</View>
+				}
 
 				<List containerStyle={{marginBottom: 20}}>
 					{
-						Object.entries(this.state.spells).map(([spellId, spell])=> (
+						this.state.spells.map((spell) => (
 							<ListItem
-								onPress={() => {this.props.viewSpell(spell, spellId)}}
+								onPress={() => {
+									this.props.viewSpell(spell, spell.spellId)
+								}}
 								roundAvatar
 								underlayColor={"#dedede"}
 								leftIcon={{
 									name: Spell.spellTypes[spell.type].icon,
 									type: Spell.spellTypes[spell.type].iconType
 								}}
-								key={spellId}
+								key={spell.spellId}
 								title={spell.name}
-								badge={{value: `Level: ${spell.level}`}}
+								badge={{value: `Level ${spell.level}`}}
 								subtitle={spell.description}
 							/>
 						))
 					}
 				</List>
-				<TouchableOpacity onPress={() => { this.showAddSpellModal(true);}}
+				<TouchableOpacity onPress={() => {
+					this.showAddSpellModal(true);
+				}}
 				                  style={{marginRight: 10}}>
 					<Icon name='plus' type='feather'/>
 				</TouchableOpacity>

@@ -16,6 +16,7 @@ class Character {
 	_background; //string
 	_level; //number
 	_languages; //array
+	_availableSpellsLeft; //map {level: amount}
 
 	_avatarUrl; //image url
 
@@ -51,6 +52,7 @@ class Character {
 		this._stats = new Stats();
 		this._features = {};
 		this._items = {};
+		this._availableSpellsLeft = {};
 	}
 
 	initFromDb(firebaseObj) {
@@ -222,6 +224,14 @@ class Character {
 
 	set connectedParty(value) {
 		this._connectedParty = value;
+	}
+
+	get availableSpellsLeft() {
+		return this._availableSpellsLeft;
+	}
+
+	set availableSpellsLeft(value) {
+		this._availableSpellsLeft = value;
 	}
 }
 
